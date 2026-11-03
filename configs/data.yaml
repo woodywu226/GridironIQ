@@ -1,0 +1,8 @@
+# Stable completed seasons for the initial pipeline smoke test.
+seasons:
+  - 2022
+  - 2023
+  - 2024
+  - 2025
+
+output_dir: data/raw
