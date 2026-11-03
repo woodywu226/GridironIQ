@@ -1,0 +1,33 @@
+name: Export 2024 NFL results
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export-results:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install nflreadpy polars
+
+      - name: Download and export 2024 regular-season results
+        run: python scripts/export_2024_results.py
+
+      - name: Commit exported CSV
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/processed/2024_regular_season_results.csv
+          git commit -m "Add 2024 NFL regular season results, Weeks 1-17" || echo "No changes to commit"
+          git push
