@@ -38,9 +38,9 @@ def main() -> None:
         .sort(["week", "gameday", "game_id"])
     )
 
-    if games.height != 272:
+    if games.height != 256:
         raise RuntimeError(
-            f"Expected 272 completed regular-season games for Weeks 1-17; "
+            f"Expected 256 completed regular-season games for Weeks 1-17; "
             f"received {games.height}. Check upstream data before exporting."
         )
 
