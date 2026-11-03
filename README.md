@@ -37,6 +37,14 @@ The repository includes [2024 Week 1 NFL game results](data/sample/2024_week1_ga
 
 The sample is based on the [nflverse schedules dataset](https://github.com/nflverse/nflverse-data), which publishes NFL game and schedule data. The nflverse project identifies most of its datasets (excluding specifically marked exceptions such as FTN data) as CC BY 4.0; retain attribution and check the dataset-specific terms before redistribution.
 
+To export all completed 2024 regular-season results from Weeks 1–17 (256 games), run:
+
+```bash
+python scripts/export_2024_results.py
+```
+
+This writes `data/processed/2024_regular_season_results.csv`. The script validates the expected game count, unique game IDs, and home-score margin before writing. You can also run the **Export 2024 NFL results** workflow from the GitHub Actions tab to fetch and commit the CSV to the repository.
+
 ### Full historical data
 
 NFL play-by-play and schedule data are retrieved with [nflreadpy](https://github.com/nflverse/nflreadpy). Run the downloader in Quick start to retrieve the selected seasons into `data/raw/`. The full raw files are intentionally not committed because play-by-play data are large and should be reproducibly downloaded from the source.
