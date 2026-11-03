@@ -31,7 +31,15 @@ The script writes Parquet files under `data/raw/`. Raw data is intentionally exc
 
 ## Data
 
-NFL play-by-play and schedule data are retrieved with [nflreadpy](https://github.com/nflverse/nflreadpy), from the nflverse data ecosystem. Review the upstream project's documentation and data terms before reuse or redistribution.
+### Included real-data sample
+
+The repository includes [2024 Week 1 NFL game results](data/sample/2024_week1_games.csv): 16 completed regular-season games with real final scores, home/away teams, dates, and home-team score differential. This is a small, human-readable sample for checking the project structure—not a statistically sufficient training set.
+
+The sample is based on the [nflverse schedules dataset](https://github.com/nflverse/nflverse-data), which publishes NFL game and schedule data. The nflverse project identifies most of its datasets (excluding specifically marked exceptions such as FTN data) as CC BY 4.0; retain attribution and check the dataset-specific terms before redistribution.
+
+### Full historical data
+
+NFL play-by-play and schedule data are retrieved with [nflreadpy](https://github.com/nflverse/nflreadpy). Run the downloader in Quick start to retrieve the selected seasons into `data/raw/`. The full raw files are intentionally not committed because play-by-play data are large and should be reproducibly downloaded from the source.
 
 ## Modeling principles
 
