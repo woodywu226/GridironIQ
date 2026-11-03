@@ -4,12 +4,13 @@ An educational, portfolio-focused project for building and evaluating NFL probab
 
 ## Project status
 
-**Phase 1 — Data foundation (in progress)**
+**Phase 2 — Feature engineering (in progress)**
 
 - [x] Repository initialized
 - [x] Reproducible schedule and play-by-play download script
-- [ ] Validate downloaded schemas and data quality
-- [ ] Build leakage-safe pregame team features
+- [x] Export and validate 2024 regular-season results (Weeks 1-17)
+- [x] Build leakage-safe pregame team and matchup feature pipeline
+- [ ] Validate feature pipeline against a full multi-season nflverse download
 - [ ] Train and evaluate a chronological baseline model
 - [ ] Add correlated same-game parlay simulation
 - [ ] Build a research dashboard
@@ -25,9 +26,11 @@ python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
 pip install -e ".[dev]"
 python scripts/download_data.py --seasons 2022 2023 2024 2025
+python scripts/build_features.py
+pytest
 ```
 
-The script writes Parquet files under `data/raw/`. Raw data is intentionally excluded from Git; rerun the script to reproduce it.
+The downloader writes source Parquet files under `data/raw/`. The feature builder writes `team_game_features.parquet` and `matchup_features.parquet` under `data/features/`. Both directories are gitignored because the source and derived datasets can be regenerated.
 
 ## Data
 
@@ -48,6 +51,19 @@ This writes `data/processed/2024_regular_season_results.csv`. The script validat
 ### Full historical data
 
 NFL play-by-play and schedule data are retrieved with [nflreadpy](https://github.com/nflverse/nflreadpy). Run the downloader in Quick start to retrieve the selected seasons into `data/raw/`. The full raw files are intentionally not committed because play-by-play data are large and should be reproducibly downloaded from the source.
+
+## Feature engineering
+
+`src/nfl_parlay/features.py` builds one row per team/game, then joins home and away histories into one row per game. Current features include:
+
+- Trailing five-game points scored and allowed
+- Offensive EPA/play, success rate, and yards/play
+- Defensive EPA/play and success rate allowed
+- Turnovers (interceptions plus lost fumbles), when those columns exist in the source
+
+Every rolling feature is shifted by one game. A team's Week 5 feature therefore uses only its completed games before Week 5; it never includes Week 5's result. Early-season histories remain null rather than being filled with future or same-game information. Bye weeks are naturally skipped because the rolling window counts prior team games, not calendar weeks.
+
+The output retains game outcomes in the team-game table for later target construction. Do not use `points_for`, `points_against`, or other same-game observed statistics as predictors for that same game.
 
 ## Modeling principles
 
